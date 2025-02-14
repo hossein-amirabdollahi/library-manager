@@ -1,76 +1,65 @@
 package com.library.librarymanager;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-class Library {
-    final ArrayList<Member> members = new ArrayList<Member>();
+public class Library {
 
-    public void addMember(String name, int age, char gender) {
-        Member member = new Member(name, age, gender);
-        members.add(member);
-        System.out.println("member " + name + " with member Id " + member.getMemberId() + " added to library");
+    private final Map<Integer, Book> books = new HashMap<>();
+    private final Map<Integer, Member> members = new HashMap<>();
+
+    private final Map<Integer, Integer> borrowedBooks = new HashMap<>(); // bookID -> memberID
+
+    public void addBook(Book book) {
+        books.put(book.getID(), book);
     }
 
-    public void displayMember(int memberId) {
-        for (Member member : members) {
-            if (member.getMemberId() == memberId) {
-                member.displayInfo();
-                return;
-            }
+    public void addMember(Member member) {
+        members.put(member.getID(), member);
+    }
+
+    public void borrowBook(Integer memberID, Integer bookID) {
+        if (!members.containsKey(memberID)) {
+            System.out.println("Member not found!");
+            return;
         }
-        System.out.println("member " + memberId + " not found" + "\nEnter a valid member ID please!");
+
+        Book book = books.get(bookID);
+        if (book == null) {
+            System.out.println("Book not found!");
+            return;
+        }
+
+        if (book.getStatus() == BookStatus.BORROWED) {
+            System.out.println("Book already borrowed!");
+            return;
+        }
+
+        book.setStatus(BookStatus.BORROWED);
+        borrowedBooks.put(bookID, memberID);
+        System.out.println("Book borrowed successfully!");
     }
 
-    public void editMember(int memberId) {
-        for (Member member : members) {
-            if (member.getMemberId() == memberId) {
-                member.displayInfo();
-                Scanner scanner = new Scanner(System.in);
-                while (true) {
-                    System.out.println("Which info do you want to edit?\n1.name\n2.age\n3.gender\n");
-                    System.out.println("if you don't want to change anything, please enter >>> 5 <<<");
-                    System.out.print("Enter your command here: ");
-                    int choose = scanner.nextInt();
-                    switch (choose) {
-                        case 1:
-                            System.out.print("Enter new name: ");
-                            String name = scanner.next();
-                            member.setName(name);
-                            System.out.println("name is updated to " + name + "\n");
-                            break;
-                        case 2:
-                            System.out.print("Enter new age: ");
-                            int age = scanner.nextInt();
-                            member.setAge(age);
-                            System.out.println("age is updated to " + age + "\n");
-                            break;
-                        case 3:
-                            System.out.print("Enter new gender: ");
-                            char gender = scanner.next().charAt(0);
-                            member.setGender(gender);
-                            System.out.println("gender is updated to " + gender + "\n");
-                            break;
-                        case 5:
-                            return;
-                        default:
-                            System.out.println("Invalid choice\nplease enter a valid number between\n" +
-                                    "\t1\t2\t3\t5");
-                    }
-                }
-            }
+    public void returnBook(Integer bookID) {
+        if (!borrowedBooks.containsKey(bookID)) {
+            System.out.println("Book wasn't borrowed!");
+            return;
         }
-        System.out.println("member " + memberId + " not found" + "\nEnter a valid member ID please!");
+
+        Book book = books.get(bookID);
+        book.setStatus(BookStatus.AVAILABLE);
+        borrowedBooks.remove(bookID);
+        System.out.println("Book returned successfully!");
     }
 
-    public void deleteMember(int memberId) {
-        for (Member member : members) {
-            if (member.getMemberId() == memberId) {
-                members.remove(member);
-                System.out.println("member " + memberId + " removed from the library!!!");
-                return;
-            }
-        }
-        System.out.println("member " + memberId + " not found" + "\nEnter a valid member ID please!");
+    public List<Book> findBooks(Predicate<Book> predicate) {
+        return books.values().stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
+
+
 }
