@@ -2,12 +2,18 @@ package com.library.librarymanager;
 
 import java.util.Scanner;
 
-public class Person {
+public class Person implements Entity {
 
     protected String name;
     protected String email;
     protected String phone;
 
+    @Override
+    public Integer getID() {
+        return 0;
+    }
+
+    @Override
     public void readFromConsole() throws BadEntityException {
 
         Scanner scanner = new Scanner(System.in);
@@ -24,6 +30,7 @@ public class Person {
 
     }
 
+    @Override
     public void showOnConsole() {
         System.out.printf("Name: %s | Email: %s | Phone: %s%n",
                 name, email, phone);
