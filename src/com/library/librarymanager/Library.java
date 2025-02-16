@@ -11,7 +11,7 @@ public class Library {
     private final Map<Integer, Book> books = new HashMap<>();
     private final Map<Integer, Member> members = new HashMap<>();
 
-    private final Map<Integer, Integer> borrowedBooks = new HashMap<>(); // bookID -> memberID
+    private final Map<Integer, Integer> borrowedBooks = new HashMap<>();
 
     public void addBook(Book book) {
         books.put(book.getID(), book);
@@ -59,6 +59,22 @@ public class Library {
         return books.values().stream()
                 .filter(predicate)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteBook(Integer bookID) {
+        if (!books.containsKey(bookID)) {
+            System.out.println("Book not found!");
+            return;
+        }
+        books.remove(bookID);
+    }
+
+    public void deleteMember(Integer memberID) {
+        if (!members.containsKey(memberID)) {
+            System.out.println("Member not found!");
+            return;
+        }
+        members.remove(memberID);
     }
 
 

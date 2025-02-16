@@ -17,11 +17,13 @@ public class LibraryApp {
             System.out.println("3. Borrow Book");
             System.out.println("4. Return Book");
             System.out.println("5. Search Books");
-            System.out.println("6. Exit");
+            System.out.println("6. Delete Book");
+            System.out.println("7. Delete Member");
+            System.out.println("8. Exit");
             System.out.print("Choose option: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -40,6 +42,12 @@ public class LibraryApp {
                     searchBooks();
                     break;
                 case 6:
+                    deleteBook();
+                    break;
+                case 7:
+                    deleteMember();
+                    break;
+                case 8:
                     System.exit(0);
                 default:
                     System.out.println("Invalid choice!");
@@ -95,6 +103,21 @@ public class LibraryApp {
         List<Book> results = library.findBooks(searchPredicate);
         System.out.println("\nSearch Results:");
         results.forEach(Book::showOnConsole);
+    }
+
+    private static void deleteBook() {
+        System.out.print("Enter Book ID to delete: ");
+        int bookID = scanner.nextInt();
+        library.deleteBook(bookID);
+        System.out.println("Book deleted successfully!");
+
+    }
+
+    private static void deleteMember() {
+        System.out.print("Enter Member ID to delete: ");
+        int memberID = scanner.nextInt();
+        library.deleteMember(memberID);
+        System.out.println("Member deleted successfully!");
     }
 
 }
